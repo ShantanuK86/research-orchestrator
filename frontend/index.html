@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Research Orchestrator — Multi-Agent AI System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header>
+  <a class="logo" href="#">
+    <div class="logo-mark"></div>
+    <span class="logo-text">research<span>.</span>orchestrator</span>
+  </a>
+  <div class="header-right">
+    <span class="badge-header">Gemini 2.0 Flash</span>
+    <a class="github-link" href="https://github.com/shantanukumar/research-orchestrator" target="_blank">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.17 6.839 9.49.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.604-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.464-1.11-1.464-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.115 2.504.337 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.202 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.741 0 .267.18.578.688.48C19.138 20.167 22 16.418 22 12c0-5.523-4.477-10-10-10z"/></svg>
+      github
+    </a>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-tag">
+    <span class="live-dot"></span>
+    Multi-Agent Orchestration System
+  </div>
+  <h1>RESEARCH<br><span class="accent">ORCHESTRATOR</span></h1>
+  <p class="hero-sub">A supervisor agent dynamically routes tasks to specialized sub-agents — Search, Critic, and Writer — with iterative refinement and real-time observability.</p>
+</section>
+
+<section class="input-section">
+  <div class="query-wrapper">
+    <div class="query-top">
+      <span class="query-icon">⬡</span>
+      <textarea id="query" rows="3" placeholder="Enter a research topic... e.g. 'Impact of LangGraph on enterprise AI adoption in 2026'"></textarea>
+    </div>
+    <div class="query-bottom">
+      <div class="query-hints">
+        <span class="hint-chip" onclick="setQuery('Future of multi-agent AI systems in 2026')">multi-agent AI trends</span>
+        <span class="hint-chip" onclick="setQuery('How does LangGraph compare to AutoGen for production agents')">LangGraph vs AutoGen</span>
+        <span class="hint-chip" onclick="setQuery('Best practices for RAG pipelines in enterprise applications')">RAG best practices</span>
+        <span class="hint-chip" onclick="setQuery('Impact of MCP protocol on AI tooling ecosystem')">MCP ecosystem</span>
+      </div>
+      <button class="run-btn" id="runBtn" onclick="runOrchestration()">
+        <span class="btn-icon">▶</span> Run Agents
+      </button>
+    </div>
+  </div>
+  <div class="api-key-row">
+    <label>GEMINI API KEY</label>
+    <input type="password" id="apikey" placeholder="AIza... (optional if set in backend .env)">
+  </div>
+</section>
+
+<!-- ── MAIN PANEL (revealed after first run) ── -->
+<div class="main" id="mainPanel">
+
+  <!-- Agent pipeline visualization -->
+  <div class="pipeline-section">
+    <div class="section-label">agent pipeline</div>
+    <div class="pipeline">
+
+      <div class="pipeline-node" id="node-supervisor" style="--node-color: var(--supervisor)">
+        <div class="node-header">
+          <div class="node-dot"></div>
+          <span class="node-name">SUPERVISOR</span>
+        </div>
+        <div class="node-role">Orchestrates all agents, routes tasks, decides iteration count</div>
+        <span class="node-status" id="status-supervisor">idle</span>
+        <div class="node-iterations" id="iter-supervisor"></div>
+      </div>
+
+      <div class="pipeline-arrow">→</div>
+
+      <div class="pipeline-node" id="node-search" style="--node-color: var(--search)">
+        <div class="node-header">
+          <div class="node-dot"></div>
+          <span class="node-name">SEARCH</span>
+        </div>
+        <div class="node-role">Gathers information, synthesizes key facts and evidence</div>
+        <span class="node-status" id="status-search">idle</span>
+        <div class="node-iterations" id="iter-search"></div>
+      </div>
+
+      <div class="pipeline-arrow">→</div>
+
+      <div class="pipeline-node" id="node-critic" style="--node-color: var(--critic)">
+        <div class="node-header">
+          <div class="node-dot"></div>
+          <span class="node-name">CRITIC</span>
+        </div>
+        <div class="node-role">Evaluates accuracy, flags gaps, requests more research</div>
+        <span class="node-status" id="status-critic">idle</span>
+        <div class="node-iterations" id="iter-critic"></div>
+      </div>
+
+      <div class="pipeline-arrow">→</div>
+
+      <div class="pipeline-node" id="node-writer" style="--node-color: var(--writer)">
+        <div class="node-header">
+          <div class="node-dot"></div>
+          <span class="node-name">WRITER</span>
+        </div>
+        <div class="node-role">Synthesizes final structured research report with citations</div>
+        <span class="node-status" id="status-writer">idle</span>
+        <div class="node-iterations" id="iter-writer"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="two-col">
+
+    <!-- Agent communication log -->
+    <div class="agent-log">
+      <div class="log-header">
+        <div class="log-title">
+          <span style="width:7px;height:7px;border-radius:50%;background:var(--supervisor);display:inline-block"></span>
+          agent communication log
+        </div>
+        <span class="log-count" id="logCount">0 events</span>
+      </div>
+      <div class="log-body" id="logBody"></div>
+    </div>
+
+    <!-- Side panel -->
+    <div class="side-panel">
+
+      <div class="info-card">
+        <div class="info-card-header">run metrics</div>
+        <div class="info-card-body">
+          <div class="stats-grid">
+            <div class="stat-item"><div class="stat-num" id="metricIterations">0</div><div class="stat-label">iterations</div></div>
+            <div class="stat-item"><div class="stat-num" id="metricTime">0s</div><div class="stat-label">elapsed</div></div>
+            <div class="stat-item"><div class="stat-num" id="metricMessages">0</div><div class="stat-label">messages</div></div>
+            <div class="stat-item"><div class="stat-num" id="metricTokens">0</div><div class="stat-label">tokens</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-card">
+        <div class="info-card-header">active agents</div>
+        <div class="info-card-body">
+          <div class="agent-legend">
+            <div class="legend-item" id="legend-supervisor" style="--agent-color: var(--supervisor)">
+              <div class="legend-dot"></div>
+              <div class="legend-info"><div class="legend-name">Supervisor</div><div class="legend-desc">LangGraph StateGraph</div></div>
+              <span class="legend-badge" style="background:rgba(0,212,170,0.1);color:var(--supervisor);border:1px solid rgba(0,212,170,0.2)">ORCH</span>
+            </div>
+            <div class="legend-item" id="legend-search" style="--agent-color: var(--search)">
+              <div class="legend-dot"></div>
+              <div class="legend-info"><div class="legend-name">Search Agent</div><div class="legend-desc">Knowledge retrieval</div></div>
+              <span class="legend-badge" style="background:rgba(77,158,255,0.1);color:var(--search);border:1px solid rgba(77,158,255,0.2)">TOOL</span>
+            </div>
+            <div class="legend-item" id="legend-critic" style="--agent-color: var(--critic)">
+              <div class="legend-dot"></div>
+              <div class="legend-info"><div class="legend-name">Critic Agent</div><div class="legend-desc">Quality evaluation</div></div>
+              <span class="legend-badge" style="background:rgba(255,107,107,0.1);color:var(--critic);border:1px solid rgba(255,107,107,0.2)">EVAL</span>
+            </div>
+            <div class="legend-item" id="legend-writer" style="--agent-color: var(--writer)">
+              <div class="legend-dot"></div>
+              <div class="legend-info"><div class="legend-name">Writer Agent</div><div class="legend-desc">Report synthesis</div></div>
+              <span class="legend-badge" style="background:rgba(245,166,35,0.1);color:var(--writer);border:1px solid rgba(245,166,35,0.2)">OUT</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-card">
+        <div class="info-card-header">iteration tracker</div>
+        <div class="info-card-body">
+          <div style="font-size:11px;color:var(--muted);margin-bottom:8px;font-family:var(--font-mono)">research loops</div>
+          <div class="iteration-bar">
+            <div class="iter-dot" id="idot-0"></div>
+            <div class="iter-dot" id="idot-1"></div>
+            <div class="iter-dot" id="idot-2"></div>
+            <div class="iter-dot" id="idot-3"></div>
+            <div class="iter-dot" id="idot-4"></div>
+            <span style="font-family:var(--font-mono);font-size:10px;color:var(--muted);margin-left:4px" id="iterLabel">0 / 5 max</span>
+          </div>
+          <div style="font-size:10px;color:var(--dim);margin-top:8px;line-height:1.4">Critic decides if more iterations needed based on quality score</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Final result -->
+  <div class="result-section" id="resultSection" style="display:none">
+    <div class="section-label">final research output</div>
+    <div class="result-card">
+      <div class="result-header">
+        <div class="result-title">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          Writer Agent — Final Report
+        </div>
+        <div class="result-actions">
+          <button class="icon-btn" onclick="copyResult()" title="Copy">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+          </button>
+          <button class="icon-btn" onclick="downloadResult()" title="Download .md">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="result-body">
+        <div class="result-text" id="resultText"></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  built by <a href="https://github.com/shantanukumar" target="_blank">shantanu kumar</a>
+  · samsung r&d · multi-agent orchestration
+  · powered by <a href="https://ai.google.dev" target="_blank">gemini 2.0 flash</a>
+  · <a href="https://github.com/shantanukumar/research-orchestrator" target="_blank">github</a>
+</footer>
+
+<script type="module" src="js/main.js"></script>
+</body>
+</html>
