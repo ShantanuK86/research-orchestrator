@@ -172,11 +172,11 @@ Stream ends with `data: [DONE]`.
 
 ## 👤 Author
 
-**Shantanu Kumar** — AI Engineer @ Samsung R&D Institute, Delhi  
+**Shantanu Kumar** — AI Engineer
 Building production multi-agent systems with AutoGen, LangGraph, and MCP.
 
 [![GitHub](https://img.shields.io/badge/GitHub-shantanukumar-black?style=flat-square&logo=github)](https://github.com/shantanukumar)
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-shantanukumar-blue?style=flat-square&logo=linkedin)](https://linkedin.com/in/shantanukumar)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-shantanukumar-blue?style=flat-square&logo=linkedin)](https://linkedin.com/in/shantanuk86)
 
 ---
 

@@ -5,7 +5,6 @@ from fastapi.responses import FileResponse
 import os
 
 from backend.api.routes import router
-from backend.core.config import CORS_ORIGINS
 
 app = FastAPI(
     title="Research Orchestrator",
@@ -13,24 +12,26 @@ app = FastAPI(
     version="1.0.0",
 )
 
-# CORS — allow frontend dev servers
+# CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=CORS_ORIGINS,
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# API routes
+# API routes first (before any static mounts)
 app.include_router(router)
 
-# Serve frontend static files (production)
+# Frontend paths
 frontend_path = os.path.join(os.path.dirname(__file__), "frontend")
-if os.path.isdir(frontend_path):
-    app.mount("/static", StaticFiles(directory=os.path.join(frontend_path, "css")), name="css")
-    app.mount("/js", StaticFiles(directory=os.path.join(frontend_path, "js")), name="js")
 
-    @app.get("/", include_in_schema=False)
-    async def serve_frontend():
-        return FileResponse(os.path.join(frontend_path, "index.html"))
+# Serve index.html at root
+@app.get("/", include_in_schema=False)
+async def serve_index():
+    return FileResponse(os.path.join(frontend_path, "index.html"))
+
+# Mount css/ and js/ so browser requests for /css/style.css and /js/main.js resolve
+app.mount("/css", StaticFiles(directory=os.path.join(frontend_path, "css")), name="css")
+app.mount("/js",  StaticFiles(directory=os.path.join(frontend_path, "js")),  name="js")
